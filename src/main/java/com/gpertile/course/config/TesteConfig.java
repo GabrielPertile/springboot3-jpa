@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Profile;
 import com.gpertile.course.entities.Category;
 import com.gpertile.course.entities.Order;
 import com.gpertile.course.entities.OrderItem;
+import com.gpertile.course.entities.Payment;
 import com.gpertile.course.entities.Product;
 import com.gpertile.course.entities.User;
 import com.gpertile.course.entities.enums.OrderStatus;
@@ -68,7 +69,7 @@ public class TesteConfig implements CommandLineRunner {
 
 		userRepository.saveAll(Arrays.asList(u1, u2));
 
-		Order o1 = new Order(null, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.DELIVERED, u1);
+		Order o1 = new Order(null, Instant.parse("2019-06-20T19:53:07Z"), OrderStatus.PAID, u1);
 		Order o2 = new Order(null, Instant.parse("2019-07-21T03:42:10Z"), OrderStatus.WAINTING_PAYMENT, u2);
 		Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"), OrderStatus.WAINTING_PAYMENT, u1);
 
@@ -80,6 +81,11 @@ public class TesteConfig implements CommandLineRunner {
 		OrderItem oi4 = new OrderItem(o3, p5, 2, p5.getPrice()); 
 
 		orderItemRepository.saveAll(Arrays.asList(oi1, oi2, oi3, oi4));
+		
+		Payment pay1 = new Payment(null, Instant.parse("2019-06-20T21:53:07Z"), o1);
+		o1.setPayment(pay1);
+		
+		orderRepository.save(o1);
 	}
 
 }
