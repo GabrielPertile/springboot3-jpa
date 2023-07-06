@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.gpertile.course.entities.User;
 import com.gpertile.course.repositories.UserRepository;
+import com.gpertile.course.services.exceptions.ResourceNotFoundException;
 
 // para declarar e poder fazer injeção de dependencia
 @Service
@@ -23,7 +24,7 @@ public class UserService {
 	public User findById(Long id) {
 		Optional<User> obj =repository.findById(id);
 		
-		return obj.get();
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 	
 	public User insert(User obj) {
