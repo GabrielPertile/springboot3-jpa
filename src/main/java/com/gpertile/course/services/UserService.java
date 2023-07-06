@@ -12,6 +12,8 @@ import com.gpertile.course.repositories.UserRepository;
 import com.gpertile.course.services.exceptions.DatabaseException;
 import com.gpertile.course.services.exceptions.ResourceNotFoundException;
 
+import jakarta.persistence.EntityNotFoundException;
+
 // para declarar e poder fazer injeção de dependencia
 @Service
 public class UserService {
@@ -35,23 +37,27 @@ public class UserService {
 
 	public void delete(Long id) {
 		try {
-	        if (repository.existsById(id)) {
-	            repository.deleteById(id);			
-	        } else {				
-	            throw new ResourceNotFoundException(id);			
-	        }		
-	    } catch (DataIntegrityViolationException e) {			
-	        throw new DatabaseException(e.getMessage());		
-	    }
+			if (repository.existsById(id)) {
+				repository.deleteById(id);
+			} else {
+				throw new ResourceNotFoundException(id);
+			}
+		} catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 
 	public User update(Long id, User obj) {
 
-		User entity = repository.getReferenceById(id);
+		try {
+			User entity = repository.getReferenceById(id);
 
-		updateData(entity, obj);
+			updateData(entity, obj);
 
-		return repository.save(entity);
+			return repository.save(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException(id);
+		}
 	}
 
 	private void updateData(User entity, User obj) {
